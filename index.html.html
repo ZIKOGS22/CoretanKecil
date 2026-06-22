@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoretanKecil - Pre-Order Custom Merchandise</title>
+    <!-- Tailwind CSS untuk Styling Cepat & Clean -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        /* Standar area kerja untuk membatasi pergerakan gambar agar tetap di dalam kaos */
+        #canvas-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.15); /* Samar-samar di atas kaos */
+            pointer-events: none;
+            white-space: nowrap;
+            font-weight: bold;
+            z-index: 30;
+        }
+        /* Style untuk gambar coretan yang bisa digerakkan */
+        #movable-img {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            touch-action: none;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <div class="max-w-7xl mx-auto px-4 py-8 lg:py-16">
+        <!-- Grid System: Kiri Visual, Kanan Form -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- SISI KIRI: VISUAL CANVAS & INTERACTIVE MOCKUP BUILDER -->
+            <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
+                <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Interactive Preview</h3>
+                
+                <!-- Container Utama Canvas -->
+                <div id="canvas-container" class="w-full max-w-md aspect-square bg-gray-100 rounded-xl flex items-center justify-center relative border border-gray-200">
+                    <!-- Base Mockup (Gambar Kaos/Hoodie/Tumblr) -->
+                    <img id="base-mockup" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80" alt="Mockup Base" class="w-full h-full object-contain pointer-events-none transition-all duration-300">
+                    
+                    <!-- Lapisan Gambar Coretan Konsumen -->
+                    <img id="movable-img" src="" alt="" class="hidden max-w-xs object-contain opacity-90">
+                    
+                    <!-- Anti-Screenshot Watermark -->
+                    <div class="watermark">CORETANKECIL PREVIEW</div>
+                </div>
+
+                <!-- Kontrol Manual (Slider Ukuran & Tombol Geser) -->
+                <div class="w-full max-w-md mt-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Atur Ukuran Gambar (<span id="size-val">50</span>%)</label>
+                        <input type="range" id="size-slider" min="10" max="100" value="50" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    
+                    <div class="flex flex-col items-center">
+                        <span class="text-xs font-medium text-gray-500 mb-2">Atur Posisi Presisi</span>
+                        <div class="grid grid-cols-3 gap-2 w-36">
+                            <td></td>
+                            <button onclick="moveImage('up')" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-center">↑</button>
+                            <td></td>
+                            <button onclick="moveImage('left')" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-center">←</button>
+                            <button onclick="resetPosition()" class="p-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-medium text-center">Reset</button>
+                            <button onclick="moveImage('right')" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-center">→</button>
+                            <td></td>
+                            <button onclick="moveImage('down')" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-center">↓</button>
+                            <td></td>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SISI KANAN: BRANDING & FORM PANEL -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- Branding Header -->
+                <div class="space-y-1">
+                    <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">coretankecil</h1>
+                    <p class="text-sm font-medium text-indigo-600 tracking-wide">Wear Their Imagination, Cherish The Creation</p>
+                </div>
+
+                <!-- Form Order -->
+                <form id="order-form" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Pemesan</label>
+                        <input type="text" id="nama" required placeholder="Masukkan nama lengkap" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat Lengkap</label>
+                        <textarea id="alamat" required rows="3" placeholder="Nama jalan, nomor rumah, RT/RW, kecamatan, kota" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nomor WhatsApp</label>
+                        <input type="tel" id="whatsapp" required placeholder="Contoh: 08123456789" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Pilih Objek</label>
+                            <select id="produk" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white transition">
+                                <option value="tshirt">T-Shirt (Kaos)</option>
+                                <option value="hoodie">Hoodie</option>
+                                <option value="tumblr">Tumblr</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Warna Dasar</label>
+                            <select id="warna" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white transition">
+                                <option value="black">Hitam</option>
+                                <option value="white">Putih</option>
+                                <option value="navy">Navy</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Upload Gambar Coretan</label>
+                        <input type="file" id="file-input" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                    </div>
+
+                    <!-- Summary / Total Ringkasan Sementara -->
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-500 font-medium">Estimasi Harga Produk:</span>
+                            <span id="price-tag" class="font-bold text-gray-900 text-base">Rp 150,000</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all transform active:scale-[0.98]">
+                        Submit & Dapatkan QR Bayar
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP QRIS & REDIRECT WHATSAPP -->
+    <div id="qr-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4">
+            <h3 class="text-xl font-bold text-gray-900">Pesanan Berhasil Dicatat!</h3>
+            <p class="text-xs text-gray-500">Silakan lakukan pembayaran menggunakan QRIS di bawah ini terlebih dahulu:</p>
+            
+            <!-- Tempat QRIS Statis Kamu -->
+            <div class="w-48 h-48 mx-auto border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center p-2 bg-white">
+                <!-- GANTI URL INI JADI URL GAMBAR QRIS KAMU -->
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=ContohQRISCoretanKecil" alt="QRIS" class="w-full h-full object-contain">
+            </div>
+
+            <div class="bg-indigo-50 p-3 rounded-xl text-left">
+                <p class="text-xs font-semibold text-indigo-900">ID Pesanan Anda:</p>
+                <p id="modal-order-id" class="text-lg font-mono font-bold text-indigo-700">CK-XXXXXX</p>
+            </div>
+
+            <button id="btn-wa" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-2">
+                Hubungi & Kirim Bukti ke WA
+            </button>
+        </div>
+    </div>
+
+    <!-- LOGIKA JAVASCRIPT UTAMA -->
+    <script>
+        const movableImg = document.getElementById('movable-img');
+        const fileInput = document.getElementById('file-input');
+        const sizeSlider = document.getElementById('size-slider');
+        const sizeVal = document.getElementById('size-val');
+        const baseMockup = document.getElementById('base-mockup');
+        const form = document.getElementById('order-form');
+        const qrModal = document.getElementById('qr-modal');
+        const produkSelect = document.getElementById('produk');
+        const warnaSelect = document.getElementById('warna');
+        const priceTag = document.getElementById('price-tag');
+
+        // Koordinat & Skala Gambar
+        let imgState = { scale: 0.5, x: 100, y: 100 };
+
+        // Database Simulasi Gambar Mockup (Ganti pakai aset aslimu nanti)
+        const mockups = {
+            tshirt: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80", // Mockup kaos putih/hitam representatif
+            hoodie: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80",
+            tumblr: "https://images.unsplash.com/photo-1577937927133-66ef06acdf18?auto=format&fit=crop&w=600&q=80"
+        };
+        
+        const harga = { tshirt: "Rp 150,000", hoodie: "Rp 225,000", tumblr: "Rp 95,000" };
+
+        // Deteksi perubahan produk untuk mengubah kanvas dasar & harga
+        function updateCanvasBase() {
+            const prod = produkSelect.value;
+            baseMockup.src = mockups[prod];
+            priceTag.innerText = harga[prod];
+        }
+        produkSelect.addEventListener('change', updateCanvasBase);
+
+        // Handle Upload Gambar & Munculkan di Atas Mockup
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    movableImg.src = event.target.result;
+                    movableImg.classList.remove('hidden');
+                    resetPosition();
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Kontrol Ukuran via Slider
+        sizeSlider.addEventListener('input', function(e) {
+            imgState.scale = e.target.value / 100;
+            sizeVal.innerText = e.target.value;
+            applyTransform();
+        });
+
+        // Kontrol Posisi (Presisi via Tombol)
+        function moveImage(direction) {
+            const step = 15;
+            if (direction === 'up') imgState.y -= step;
+            if (direction === 'down') imgState.y += step;
+            if (direction === 'left') imgState.x -= step;
+            if (direction === 'right') imgState.x += step;
+            applyTransform();
+        }
+
+        function resetPosition() {
+            imgState.x = 100;
+            imgState.y = 120;
+            imgState.scale = 0.5;
+            sizeSlider.value = 50;
+            sizeVal.innerText = 50;
+            applyTransform();
+        }
+
+        function applyTransform() {
+            movableImg.style.transform = `translate(${imgState.x}px, ${imgState.y}px) scale(${imgState.scale})`;
+        }
+
+        // Logic Drag & Drop Menggunakan Mouse / Jari di Layar HP
+        let isDragging = false;
+        let startX, startY;
+
+        movableImg.addEventListener('mousedown', startDrag);
+        movableImg.addEventListener('touchstart', startDrag);
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('touchmove', drag);
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+
+        function startDrag(e) {
+            isDragging = true;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            startX = clientX - imgState.x;
+            startY = clientY - imgState.y;
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            imgState.x = clientX - startX;
+            imgState.y = clientY - startY;
+            applyTransform();
+        }
+
+        function endDrag() { isDragging = false; }
+
+        // PROSES SUBMIT ORDER & REDIRECT WA
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nama = document.getElementById('nama').value;
+            const alamat = document.getElementById('alamat').value;
+            let wa = document.getElementById('whatsapp').value;
+            const produk = produkSelect.value;
+            const warna = warnaSelect.value;
+
+            // Generate ID Order Acak (Format: CK-YYYYMM-XXXX)
+            const date = new Date();
+            const idOrder = `CK-${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+            // --- JALUR OTOMATISASI GOOGLE SHEETS ---
+            // Nanti, URL web app script kamu ditaruh di sini untuk auto-input data ke Google Sheets gratisan
+            const scriptURL = 'SEBARKAN_URL_GOOGLE_APPS_SCRIPT_KAMU_DISINI';
+            
+            // Format data yang dikirim ke backend Google Sheets
+            const formData = new FormData();
+            formData.append('id_order', idOrder);
+            formData.append('nama', nama);
+            formData.append('alamat', alamat);
+            formData.append('whatsapp', wa);
+            formData.append('produk', produk);
+            formData.append('warna', warna);
+            formData.append('koordinat_x', imgState.x);
+            formData.append('koordinat_y', imgState.y);
+            formData.append('skala', imgState.scale);
+            // File gambar bisa dikonversi ke Base64 jika ingin langsung masuk Drive via script
+
+            if (scriptURL !== 'SEBARKAN_URL_GOOGLE_APPS_SCRIPT_KAMU_DISINI') {
+                fetch(scriptURL, { method: 'POST', body: formData }).catch(err => console.log('Google Sheets Terisi Manual Bisnis'));
+            }
+
+            // Tampilkan Modal QRIS
+            document.getElementById('modal-order-id').innerText = idOrder;
+            qrModal.classList.remove('hidden');
+
+            // Set Aksi Tombol Kirim WhatsApp (No HP tujuan diganti dengan no WA tokomu, misal: 62812345678)
+            const nomorAdminWA = "628123456789"; // GANTI DENGAN NOMOR WA KAMU (Wajib pakai kode negara '62' di depan)
+            
+            // Format Teks Sesuai Request Kamu
+            const teksWA = encodeURIComponent(`Hai coretan kecil saya ${nama}, ini nomor order saya ${idOrder}. dan ini bukti bayarnya.`);
+            
+            document.getElementById('btn-wa').onclick = function() {
+                window.location.href = `https://wa.me/${nomorAdminWA}?text=${teksWA}`;
+            };
+        });
+    </script>
+</body>
+</html>
