@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoretanKecil - Pre-Order Custom Merchandise</title>
+    <!-- Tailwind CSS untuk Styling Modern -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         #canvas-container {
@@ -33,6 +34,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
+    <!-- TOMBOL RAHASIA UNTUK MASUK PANEL ADMIN -->
     <div class="absolute top-4 right-4 z-50">
         <button onclick="bukaLoginAdmin()" class="text-xs text-gray-300 hover:text-indigo-500 font-mono transition cursor-pointer">🛠️ Admin Area</button>
     </div>
@@ -40,16 +42,17 @@
     <div class="max-w-7xl mx-auto px-4 py-8 lg:py-16">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
+            <!-- SISI KIRI: VISUAL CANVAS (Hanya butuh 1 file kaos-polos.png) -->
             <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
                 <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Interactive Preview</h3>
                 
                 <div id="canvas-container" class="w-full max-w-md aspect-square bg-gray-100 rounded-xl flex items-center justify-center relative border border-gray-200">
-                    <!-- GANTI BARIS BASE-MOCKUP MENJADI SEPERTI INI -->
                     <img id="base-mockup" src="kaos-polos.png" alt="Mockup Base" class="w-full h-full object-contain pointer-events-none transition-all duration-300" style="mix-blend-mode: multiply !important;">
                     <img id="movable-img" src="" alt="" class="hidden max-w-xs object-contain opacity-90">
                     <div class="watermark">CORETANKECIL PREVIEW</div>
                 </div>
 
+                <!-- Kontrol Manual Ukuran dan Posisi -->
                 <div class="w-full max-w-md mt-6 space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Atur Ukuran Gambar (<span id="size-val">50</span>%)</label>
@@ -66,7 +69,7 @@
                         </p>
                     </div>
                     
-                    <div class="flex flex-col items-center">
+                    <div class="flex flex-col items-center pt-2">
                         <span class="text-xs font-medium text-gray-500 mb-2">Atur Posisi Presisi</span>
                         <div class="grid grid-cols-3 gap-2 w-36">
                             <div></div>
@@ -83,6 +86,7 @@
                 </div>
             </div>
 
+            <!-- SISI KANAN: FORM PANEL INPUT -->
             <div class="lg:col-span-5 space-y-6">
                 <div class="space-y-1">
                     <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">coretankecil</h1>
@@ -125,6 +129,7 @@
                         </div>
                     </div>
 
+                    <!-- INPUT TEKS TAMBAHAN UNTUK CUSTOM WARNA LAIN -->
                     <div id="custom-warna-container" class="hidden mt-2">
                         <label class="block text-xs font-semibold text-gray-500 mb-1">Tulis Warna Yang Diinginkan:</label>
                         <input type="text" id="custom-warna-input" placeholder="Misal: Sage Green, Lilac, Merah" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm outline-none">
@@ -135,6 +140,7 @@
                         <input type="file" id="file-input" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
                     </div>
 
+                    <!-- KODE VOUCHER PROMO -->
                     <div class="pt-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Punya Kode Voucher?</label>
                         <div class="flex gap-2">
@@ -144,6 +150,7 @@
                         <p id="voucher-status" class="text-xs mt-1 hidden"></p>
                     </div>
 
+                    <!-- RINCIAN HARGA NOTA -->
                     <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
                         <div class="flex justify-between items-center text-sm">
                             <span class="text-gray-500 font-medium">Subtotal Produk:</span>
@@ -168,6 +175,7 @@
         </div>
     </div>
 
+    <!-- POP-UP LOGIN ADMIN -->
     <div id="admin-login-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-6 text-center shadow-xl space-y-4">
             <h3 class="text-lg font-bold text-gray-900">🔐 Keamanan Admin</h3>
@@ -179,6 +187,7 @@
         </div>
     </div>
 
+    <!-- POP-UP DASHBOARD UTAMA RAHASIA ADMIN (Tempat Edit Harga & Voucher) -->
     <div id="admin-dashboard-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-6">
             <div class="flex justify-between items-center">
@@ -222,23 +231,25 @@
         </div>
     </div>
 
+    <!-- POP-UP NOTIFIKASI SUKSES ORDER (VERSI LANGSUNG TOTAL) -->
     <div id="success-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl font-bold">✓</div>
-            <h3 class="text-xl font-bold text-gray-900">Pesanan Berhasil Dicatat!</h3>
-            <p class="text-sm text-gray-500">Langkah terakhir, klik tombol di bawah untuk mengirim ID Order ke WhatsApp Admin agar tim kami bisa langsung merapikan desainnya gratis di Canva.</p>
+            <h3 class="text-xl font-bold text-gray-900">Pesanan Dicatat!</h3>
+            <p class="text-sm text-gray-500">Langkah terakhir, klik tombol di bawah untuk mengirim ID Order dan Total Biaya ke WhatsApp Admin agar pesananmu bisa langsung kami konfirmasi. 🚀</p>
             
             <div class="bg-indigo-50 p-3 rounded-xl text-left">
-                <p class="text-xs font-semibold text-indigo-900">ID Pesanan Unik Anda:</p>
+                <p class="text-xs font-semibold text-indigo-900">ID Pesanan Kamu:</p>
                 <p id="modal-order-id" class="text-lg font-mono font-bold text-indigo-700">CK-XXXXXX</p>
             </div>
 
             <button id="btn-wa" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-2">
-                Kirim ID Order ke WhatsApp
+                Kirim Data ke WhatsApp Admin
             </button>
         </div>
     </div>
 
+    <!-- JAVASCRIPT ENGINE LOGIC -->
     <script>
         // PASSWORD PANEL ADMIN KAMU (Bisa diganti sesuai keinginan)
         const PASSWORD_RAHASIA_KAMU = "admincoretan123";
@@ -282,8 +293,6 @@
             else if (col === 'white') { baseMockup.style.backgroundColor = "#ffffff"; customWarnaContainer.classList.add('hidden'); }
             else if (col === 'navy') { baseMockup.style.backgroundColor = "#1b263b"; customWarnaContainer.classList.add('hidden'); }
             else if (col === 'custom') { baseMockup.style.backgroundColor = "#d1d5db"; customWarnaContainer.classList.remove('hidden'); }
-            
-            baseMockup.style.mixBlendMode = "multiply"; 
             
             // Kalkulasi Logika Perhitungan Harga Final
             let hargaDasar = databaseHarga[prod] || 0;
@@ -358,7 +367,6 @@
         }
 
         // LOGIKA INTERAKTIF UPLOAD GAMBAR & DRAG-MOVE (Sistem Grid)
-        // GANTI FUNGSI PREVIEW UPLOAD GAMBAR DENGAN INI
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -366,21 +374,22 @@
                 reader.onload = function(event) {
                     movableImg.src = event.target.result;
                     movableImg.classList.remove('hidden');
-                    // Paksa gambar muncul di atas kaos
                     movableImg.style.display = "block"; 
                     resetPosition();
                 }
                 reader.readAsDataURL(file);
             }
         });
+
         sizeSlider.addEventListener('input', function(e) {
             imgState.scale = e.target.value / 100;
             sizeVal.innerText = e.target.value;
             applyTransform();
         });
 
+        // Fitur Gerak Tombol Presisi
         function moveImage(direction) {
-            const step = 15;
+            const step = 5;
             if (direction === 'up') imgState.y -= step;
             if (direction === 'down') imgState.y += step;
             if (direction === 'left') imgState.x -= step;
@@ -432,7 +441,7 @@
                 warnaFinal = "Custom: " + customWarnaInput.value;
             }
 
-            // Kunci Logika Pembuatan ID Order Unik Otomatis Berbasis Tanggal Berjalan (Tahun 2026)
+            // Pembuatan ID Order Unik Otomatis Berbasis Tanggal Berjalan (Tahun 2026)
             const date = new Date();
             const idOrder = `CK-${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -453,12 +462,17 @@
                 fetch(scriptURL, { method: 'POST', body: formData }).catch(err => console.log(err));
             }
 
-            // Pemicu Muncul Pop-Up Sukses & Lempar Teks Data ke WhatsApp Toko Kamu
+            // Pemicu Muncul Pop-Up Sukses
             document.getElementById('modal-order-id').innerText = idOrder;
             successModal.classList.remove('hidden');
 
+            // Mengambil Nominal Total Akhir dari Layar
+            const totalHargaSistem = priceTagTotal.innerText;
+
             const nomorAdminWA = "628123456789"; // WAJIB GANTI JADI NOMOR WHATSAPP ASLI TOKO KAMU (Kepala 62)
-            const teksWA = encodeURIComponent(`Halo Admin CoretanKecil, saya baru saja submit desain kasar di website.\n\n*Nama:* ${nama}\n*ID Order:* ${idOrder}\n\nTolong bantu buatkan versi rapi berkualitas tingginya di Canva ya Kak. Terima kasih!`);
+            
+            // Teks WhatsApp Super Santai + Total Biaya Pemesanan
+            const teksWA = encodeURIComponent(`Halo min! Saya baru aja beres submit orderan di website nih. 😎\n\n*Detail Order:*\n• Nama: ${nama}\n• ID Order: ${idOrder}\n• Total Biaya: ${totalHargaSistem}\n\nKabari langkah selanjutnya untuk pembayarannya ya Kak, makasih!`);
             
             document.getElementById('btn-wa').onclick = function() {
                 window.location.href = `https://wa.me/${nomorAdminWA}?text=${teksWA}`;
