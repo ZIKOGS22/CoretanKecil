@@ -42,7 +42,7 @@
     <div class="max-w-7xl mx-auto px-4 py-8 lg:py-16">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- SISI KIRI: VISUAL CANVAS (Hanya butuh 1 file kaos-polos.png) -->
+            <!-- SISI KIRI: VISUAL CANVAS -->
             <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
                 <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Interactive Preview</h3>
                 
@@ -52,10 +52,10 @@
                     <div class="watermark">CORETANKECIL PREVIEW</div>
                 </div>
 
-                <!-- Kontrol Manual Ukuran dan Posisi -->
+                <!-- Kontrol Manual Ukuran Gambar dan Posisi -->
                 <div class="w-full max-w-md mt-6 space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Atur Ukuran Gambar (<span id="size-val">50</span>%)</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Atur Ukuran Gambar Coretan (<span id="size-val">50</span>%)</label>
                         <input type="range" id="size-slider" min="10" max="100" value="50" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                     </div>
 
@@ -109,6 +109,7 @@
                         <input type="tel" id="whatsapp" required placeholder="Contoh: 08123456789" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
                     </div>
 
+                    <!-- BARIS INPUT PRODUK & WARNA -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Pilih Objek</label>
@@ -135,8 +136,31 @@
                         <input type="text" id="custom-warna-input" placeholder="Misal: Sage Green, Lilac, Merah" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm outline-none">
                     </div>
 
+                    <!-- BARIS: PILIHAN UKURAN KAOS (DENGAN SIZE CHART) & INPUT FILE KLIEN -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="flex items-center gap-1.5 mb-1">
+                                <label class="block text-sm font-semibold text-gray-700">Ukuran Kaos</label>
+                                <!-- Tombol Tanya Size Chart Bulat Kecil -->
+                                <button type="button" onclick="bukaSizeChart()" class="text-xs bg-gray-100 hover:bg-indigo-100 text-gray-500 hover:text-indigo-600 w-4 h-4 rounded-full flex items-center justify-center font-bold font-mono transition cursor-pointer" title="Lihat Panduan Ukuran">?</button>
+                            </div>
+                            <select id="ukuran" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white transition">
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                                <option value="3XL">3XL</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">File Mentah Klien</label>
+                            <input type="file" id="client-file-input" class="w-full text-xs text-gray-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer pt-1">
+                        </div>
+                    </div>
+
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Upload Gambar Coretan</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Upload Gambar Coretan (Untuk Preview)</label>
                         <input type="file" id="file-input" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
                     </div>
 
@@ -175,6 +199,27 @@
         </div>
     </div>
 
+    <!-- POP-UP MODAL PANDUAN UKURAN (SIZE CHART) -->
+    <div id="size-chart-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4 relative">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <span>📏</span> Panduan Ukuran T-Shirt
+                </h3>
+                <button type="button" onclick="tutupModal('size-chart-modal')" class="text-gray-400 hover:text-gray-600 font-bold p-1 text-lg">✕</button>
+            </div>
+            
+            <!-- Area Gambar Size Chart -->
+            <div class="w-full overflow-hidden rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center p-2">
+                <img src="size-chart.png" alt="Panduan Ukuran Baju" class="max-w-full h-auto object-contain rounded-lg">
+            </div>
+
+            <button type="button" onclick="tutupModal('size-chart-modal')" class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-xl transition">
+                Tutup Panduan
+            </button>
+        </div>
+    </div>
+
     <!-- POP-UP LOGIN ADMIN -->
     <div id="admin-login-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-6 text-center shadow-xl space-y-4">
@@ -187,7 +232,7 @@
         </div>
     </div>
 
-    <!-- POP-UP DASHBOARD UTAMA RAHASIA ADMIN (Tempat Edit Harga & Voucher) -->
+    <!-- POP-UP DASHBOARD UTAMA RAHASIA ADMIN -->
     <div id="admin-dashboard-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-6">
             <div class="flex justify-between items-center">
@@ -231,7 +276,7 @@
         </div>
     </div>
 
-    <!-- POP-UP NOTIFIKASI SUKSES ORDER (VERSI LANGSUNG TOTAL) -->
+    <!-- POP-UP NOTIFIKASI SUKSES ORDER -->
     <div id="success-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl font-bold">✓</div>
@@ -251,15 +296,12 @@
 
     <!-- JAVASCRIPT ENGINE LOGIC -->
     <script>
-        // PASSWORD PANEL ADMIN KAMU (Bisa diganti sesuai keinginan)
         const PASSWORD_RAHASIA_KAMU = "admincoretan123";
 
-        // Mengambil data dinamis atau memakai nilai bawaan standar awal toko
         let databaseHarga = JSON.parse(localStorage.getItem('db_harga')) || { pendek: 135000, "tiga-perempat": 145000, panjang: 155000 };
         let databaseVoucher = JSON.parse(localStorage.getItem('db_voucher')) || { kode: "CORETANPERDANA", diskon: 15000 };
         let voucherAktifTerpasang = 0;
 
-        // Element DOM
         const movableImg = document.getElementById('movable-img');
         const fileInput = document.getElementById('file-input');
         const sizeSlider = document.getElementById('size-slider');
@@ -269,6 +311,7 @@
         const successModal = document.getElementById('success-modal');
         const produkSelect = document.getElementById('produk');
         const warnaSelect = document.getElementById('warna');
+        const ukuranSelect = document.getElementById('ukuran');
         
         const priceTagSub = document.getElementById('price-tag-sub');
         const priceTagDisc = document.getElementById('price-tag-disc');
@@ -280,28 +323,23 @@
 
         let imgState = { scale: 0.5, x: 100, y: 120 };
 
-        // FUNGSI UTAMA SINKRONISASI VISUAL WARNA & HARGA NOTA
         function updateCanvasBase() {
             const prod = produkSelect.value;
             const col = warnaSelect.value;
             
-            // Kunci Visual: Semua jenis lengan tetap menggunakan visual template kaos-polos.png
             baseMockup.src = "kaos-polos.png"; 
             
-            // Trik Efek Pewarnaan Digital CSS Multiply
             if (col === 'black') { baseMockup.style.backgroundColor = "#212121"; customWarnaContainer.classList.add('hidden'); }
             else if (col === 'white') { baseMockup.style.backgroundColor = "#ffffff"; customWarnaContainer.classList.add('hidden'); }
             else if (col === 'navy') { baseMockup.style.backgroundColor = "#1b263b"; customWarnaContainer.classList.add('hidden'); }
             else if (col === 'custom') { baseMockup.style.backgroundColor = "#d1d5db"; customWarnaContainer.classList.remove('hidden'); }
             
-            // Kalkulasi Logika Perhitungan Harga Final
             let hargaDasar = databaseHarga[prod] || 0;
             let biayaTambahan = col === 'custom' ? 20000 : 0;
             let subtotal = hargaDasar + biayaTambahan;
             let totalAkhir = subtotal - voucherAktifTerpasang;
             if (totalAkhir < 0) totalAkhir = 0;
 
-            // Cetak Nominal Rupiah Berformat ke UI Website
             priceTagSub.innerText = "Rp " + subtotal.toLocaleString('id-ID');
             priceTagDisc.innerText = "-Rp " + voucherAktifTerpasang.toLocaleString('id-ID');
             priceTagTotal.innerText = "Rp " + totalAkhir.toLocaleString('id-ID');
@@ -310,7 +348,6 @@
         produkSelect.addEventListener('change', updateCanvasBase);
         warnaSelect.addEventListener('change', updateCanvasBase);
 
-        // KLAIM PROMO VOUCHER
         function klaimVoucher() {
             const inputVoucher = document.getElementById('voucher-input').value.trim().toUpperCase();
             const statusTxt = document.getElementById('voucher-status');
@@ -330,10 +367,13 @@
             updateCanvasBase();
         }
 
-        // KONTROL PANEL ADMIN AREA
         function bukaLoginAdmin() {
             document.getElementById('admin-pass-input').value = "";
             document.getElementById('admin-login-modal').classList.remove('hidden');
+        }
+
+        function bukaSizeChart() {
+            document.getElementById('size-chart-modal').classList.remove('hidden');
         }
 
         function tutupModal(id) { document.getElementById(id).classList.add('hidden'); }
@@ -366,7 +406,6 @@
             updateCanvasBase();
         }
 
-        // LOGIKA INTERAKTIF UPLOAD GAMBAR & DRAG-MOVE (Sistem Grid)
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -387,9 +426,8 @@
             applyTransform();
         });
 
-        // Fitur Gerak Tombol Presisi
         function moveImage(direction) {
-            const step = 5;
+            const step = 2; 
             if (direction === 'up') imgState.y -= step;
             if (direction === 'down') imgState.y += step;
             if (direction === 'left') imgState.x -= step;
@@ -427,7 +465,6 @@
         }
         function endDrag() { isDragging = false; }
 
-        // LOGIKA PROSES SUBMIT ORDER (AUTOMATIC GENERATE ID ORDER UNIK)
         form.addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -435,18 +472,19 @@
             const alamat = document.getElementById('alamat').value;
             const wa = document.getElementById('whatsapp').value;
             const produk = produkSelect.value;
+            const ukuran = ukuranSelect.value;
             
             let warnaFinal = warnaSelect.value;
             if (warnaFinal === 'custom') {
                 warnaFinal = "Custom: " + customWarnaInput.value;
             }
 
-            // Pembuatan ID Order Unik Otomatis Berbasis Tanggal Berjalan (Tahun 2026)
             const date = new Date();
             const idOrder = `CK-${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            // Mengirim data form & koordinat presisi ke Google Sheets via Web Apps Script URL
-            const scriptURL = 'SEBARKAN_URL_GOOGLE_APPS_SCRIPT_KAMU_DISINI';
+            const mockupFile = fileInput.files[0]; 
+            const klienFile = document.getElementById('client-file-input')?.files[0]; 
+
             const formData = new FormData();
             formData.append('id_order', idOrder);
             formData.append('nama', nama);
@@ -454,32 +492,54 @@
             formData.append('whatsapp', wa);
             formData.append('produk', produk);
             formData.append('warna', warnaFinal);
-            formData.append('koordinat_x', imgState.x);
-            formData.append('koordinat_y', imgState.y);
-            formData.append('skala', imgState.scale);
+            formData.append('ukuran', ukuran);
 
-            if (scriptURL !== 'SEBARKAN_URL_GOOGLE_APPS_SCRIPT_KAMU_DISINI') {
-                fetch(scriptURL, { method: 'POST', body: formData }).catch(err => console.log(err));
-            }
+            const readFileAsBase64 = (file) => {
+                return new Promise((resolve) => {
+                    if (!file) return resolve(null);
+                    const reader = new FileReader();
+                    reader.onload = (event) => resolve({
+                        base64: event.target.result.split(',')[1],
+                        name: file.name,
+                        type: file.type
+                    });
+                    reader.readAsDataURL(file);
+                });
+            };
 
-            // Pemicu Muncul Pop-Up Sukses
+            Promise.all([readFileAsBase64(mockupFile), readFileAsBase64(klienFile)]).then(([mockupRes, klienRes]) => {
+                if (mockupRes) {
+                    formData.append('mockup_data', mockupRes.base64);
+                    formData.append('mockup_name', `mockup_${idOrder}_${mockupRes.name}`);
+                    formData.append('mockup_type', mockupRes.type);
+                }
+                if (klienRes) {
+                    formData.append('file_data', klienRes.base64);
+                    formData.append('file_name', `file_${idOrder}_${klienRes.name}`);
+                    formData.append('file_type', klienRes.type);
+                }
+
+                const scriptURL = 'SEBARKAN_URL_GOOGLE_APPS_SCRIPT_KAMU_DISINI';
+                if (scriptURL !== 'SEBARKAN_URL_GOOGLE_APPS_SCRIPT_KAMU_DISINI') {
+                    fetch(scriptURL, { method: 'POST', body: formData })
+                    .then(res => console.log('Data sukses tercatat!'))
+                    .catch(err => console.log(err));
+                }
+            });
+
             document.getElementById('modal-order-id').innerText = idOrder;
             successModal.classList.remove('hidden');
 
-            // Mengambil Nominal Total Akhir dari Layar
             const totalHargaSistem = priceTagTotal.innerText;
-
-            const nomorAdminWA = "628123456789"; // WAJIB GANTI JADI NOMOR WHATSAPP ASLI TOKO KAMU (Kepala 62)
+            const nomorAdminWA = "628123456789"; // GANTI JADI NOMOR WHATSAPP KAMU
             
-            // Teks WhatsApp Super Santai + Total Biaya Pemesanan
-            const teksWA = encodeURIComponent(`Halo min! Saya baru aja beres submit orderan di website nih. 😎\n\n*Detail Order:*\n• Nama: ${nama}\n• ID Order: ${idOrder}\n• Total Biaya: ${totalHargaSistem}\n\nKabari langkah selanjutnya untuk pembayarannya ya Kak, makasih!`);
+            const teksWA = encodeURIComponent(`Halo min! Saya baru aja beres submit orderan di website nih. 😎\n\n*Detail Order:*\n• Nama: ${nama}\n• ID Order: ${idOrder}\n• Ukuran Kaos: ${ukuran}\n• Total Biaya: ${totalHargaSistem}\n\nKabari langkah selanjutnya untuk pembayarannya ya Kak, makasih!`);
             
             document.getElementById('btn-wa').onclick = function() {
                 window.location.href = `https://wa.me/${nomorAdminWA}?text=${teksWA}`;
             };
         });
 
-        // Jalankan fungsi awal ketika halaman website dimuat pertama kali
         updateCanvasBase();
     </script>
 </body>
